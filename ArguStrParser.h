@@ -21,13 +21,16 @@ private:
 
     template <>
     static std::vector<double> _parseNestedVector(const std::string& str);
+
+    template <>
+    static std::vector<std::string> _parseNestedVector(const std::string& str);
 };
 
 
 template <typename T>
 T ArguStrParser::parseNestedVector(std::string& str) {
     // 去空格
-    str.erase(std::remove_if(str.begin(), str.end(), [](char c) { return c == ' ' || c == '\n'; }), str.end());
+    str.erase(std::remove_if(str.begin(), str.end(), [](char c) { return c == ' ' || c == '\n' || c=='\"'; }), str.end());
     return ArguStrParser::_parseNestedVector<T>(str); //如果传入的类型是一维的，会直接调用特化的版本
 }
 
@@ -89,6 +92,18 @@ std::vector<double> ArguStrParser::_parseNestedVector(const std::string& str) {
     std::string token;
     while (std::getline(ss, token, ',')) {
         result.push_back(std::stod(token));
+    }
+    return result;
+}
+
+template <>
+std::vector<std::string> ArguStrParser::_parseNestedVector(const std::string& str) {
+    std::vector<std::string> result;
+    std::string content = str.substr(1, str.size() - 2);
+    std::stringstream ss(content);
+    std::string token;
+    while (std::getline(ss, token, ',')) {
+        result.push_back(token);
     }
     return result;
 }

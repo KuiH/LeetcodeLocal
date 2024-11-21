@@ -20,32 +20,20 @@ using namespace std;
 
 class Solution {
 public:
-    vector<int> shortestDistanceAfterQueries(int n, vector<vector<int>>& queries) {
-        vector<int> res;
-        int next[100005] = { 0 };
-        for (int i = 0; i < n-1; ++i) { next[i] = i + 1; }
-        int cur_len = n - 1;
-        for (auto& q : queries) {
-            if (next[q[0]] == -1) {  //这条边已经被删除
-                res.push_back(cur_len);
-                continue; 
-            } 
-            //删除节点
-            int p = next[q[0]];
-            while (p != -1 && p < q[1]) {
-                int temp = next[p]; 
-                next[p] = -1;
-                p = temp;
-                cur_len--;
-            }
-            next[q[0]] = q[1];
-            res.push_back(cur_len);
+    int finalPositionOfSnake(int n, vector<string>& commands) {
+        int res = 0;
+        std::map<std::string, int> com_map = {
+           {"UP", -n},
+           {"RIGHT", 1},
+           {"DOWN", n},
+           {"LEFT", -1}
+        };
+        for (auto& c : commands) {
+            res += com_map[c];
         }
-
         return res;
     }
 };
-
 
 //template<typename Func, typename ... Args>
 //auto excute(Func&& function, Solution* solution, Args&& ... args)
@@ -64,16 +52,16 @@ auto excute(FuncType ClassType::* func, ClassType* obj, Args&&... args)
 int main()
 {
     
-    std::string input = "[[[0.34,323.9],[0,2]],[[0.34,323.9],[0,2]]]";
-    using TargetType = std::vector<std::vector<std::vector<double>>>;
+    std::string input = R"(["RIGHT","DOWN"])";
+    using TargetType = std::vector<std::string>;
     TargetType parsedData = ArguStrParser::parseNestedVector<TargetType>(input);
 
     cout << "parsedData:" << endl;
     ResultPrinter::printResult(parsedData);
 
-    //Solution solution;
-    //auto res = excute(&Solution::shortestDistanceAfterQueries, &solution, 4, parsedData);
-    //cout << "\nres:" << endl;
-    //ResultPrinter::printResult(res);
+    Solution solution;
+    auto res = excute(&Solution::finalPositionOfSnake, &solution,2, parsedData);
+    cout << "\nres:" << endl;
+    ResultPrinter::printResult(res);
     return 0;
 }

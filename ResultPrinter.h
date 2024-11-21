@@ -27,7 +27,7 @@ inline void ResultPrinter::printResult(T& obj)
     else if constexpr (std::is_same_v<T, std::string>) {
         std::cout << obj << ' ';
     }
-    else {
+    else { //可迭代的类型
         for (auto& i : obj)
         {
             ResultPrinter::printResult(i);
